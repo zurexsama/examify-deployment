@@ -15,7 +15,13 @@ import os
 socket.has_ipv6 = True
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://localhost/examify')
+
+# Check for required environment variables
+database_url = os.getenv('DATABASE_URL')
+if not database_url:
+    raise ValueError("DATABASE_URL environment variable is not set. Please configure it in Railway.")
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'connect_args': {
         'sslmode': 'require',
