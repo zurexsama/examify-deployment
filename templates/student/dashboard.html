@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Student Dashboard | Examify</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <h1>📚 Examify - Student Dashboard</h1>
+            <div class="user-info">
+                <span>Welcome, {{ session.name }}!</span>
+                <a href="/logout" class="logout-btn">Logout</a>
+            </div>
+        </header>
+
+        <main class="dashboard-main">
+            <div class="dashboard-section">
+                <h2>🔐 Enter Quiz Access Code</h2>
+                <div class="access-code-form">
+                    <form method="POST" action="/student/enter-access-code">
+                        <div class="form-group">
+                            <label for="access_code">Access Code:</label>
+                            <input type="text" id="access_code" name="access_code" required maxlength="8" placeholder="Enter 8-character code (e.g., ABC12345)" style="text-transform: uppercase; font-family: monospace; font-size: 1.2em; letter-spacing: 2px;">
+                            <small style="color: #6c757d; display: block; margin-top: 5px;">
+                                Enter the 8-character alphanumeric code provided by your teacher.
+                                Codes are case-insensitive and can only be used once.
+                            </small>
+                        </div>
+                        <button type="submit" class="btn-primary">🔓 Access Quiz</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="dashboard-section">
+                <h2>📊 My Quiz Attempts</h2>
+                <div class="attempts-table">
+                    {% if attempts %}
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Quiz</th>
+                                    <th>Score</th>
+                                    <th>Percentage</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for attempt in attempts %}
+                                    <tr>
+                                        <td>Quiz #{{ attempt.quiz_id }}</td>
+                                        <td>{{ attempt.score }}/{{ attempt.total_marks }}</td>
+                                        <td class="percentage">{{ "%.1f"|format(attempt.percentage) }}%</td>
+                                        <td>{{ attempt.completed_at.strftime('%Y-%m-%d %H:%M') if attempt.completed_at else 'N/A' }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <div class="no-attempts">
+                            <p>You haven't taken any quizzes yet.</p>
+                            <p>Start by taking a quiz from the available quizzes above!</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
