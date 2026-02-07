@@ -458,11 +458,15 @@ def email_codes(quiz_id):
             flash(f'Not enough available codes. Only {len(codes)} codes available for {len(emails)} emails.', 'error')
             return redirect(url_for('email_codes', quiz_id=quiz_id))
 
-            # Email configuration
-        SMTP_SERVER = 'smtp.gmail.com'
-        SMTP_PORT = 587
-        SENDER_EMAIL = 'lamanilaoexequiel4@gmail.com'  # Replace with actual Gmail address
-        SENDER_PASSWORD = 'oytl rkgz lwvl qisf'  # Replace with app password
+            # Email configuration from environment variables
+        SMTP_SERVER = os.getenv('SMTP_SERVER', 'smtp.gmail.com')
+        SMTP_PORT = int(os.getenv('SMTP_PORT', 587))
+        SENDER_EMAIL = os.getenv('SENDER_EMAIL')
+        SENDER_PASSWORD = os.getenv('SENDER_PASSWORD')
+        
+        if not SENDER_EMAIL or not SENDER_PASSWORD:
+            flash('Email configuration not set. Please contact the administrator.', 'error')
+            return redirect(url_for('view_codes', quiz_id=quiz_id))
 
 
         try:
