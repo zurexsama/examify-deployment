@@ -19,7 +19,7 @@ app = Flask(__name__)
 # Check for required environment variables
 database_url = os.getenv('DATABASE_URL')
 if not database_url:
-    raise ValueError("DATABASE_URL environment variable is not set. Please configure it in Railway.")
+    database_url = 'postgresql://postgres:Death_march143@db.pxeclpyxatrebmsheznw.supabase.co:5432/postgres'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
