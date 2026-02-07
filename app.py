@@ -25,6 +25,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Death_march143@db
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'connect_args': {
         'sslmode': 'require',
+        'family': socket.AF_INET,
     },
 }
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
