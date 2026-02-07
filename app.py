@@ -29,6 +29,7 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
 }
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
 db = SQLAlchemy(app)
+db.create_all()
 
 # Models
 class User(db.Model):
