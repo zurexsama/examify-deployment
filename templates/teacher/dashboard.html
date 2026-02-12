@@ -74,6 +74,7 @@
                                 </p>
                                 <p class="creator-info">Created by: {{ session.name }}</p>
                                 <div class="quiz-actions">
+                                    <a href="/teacher/edit-quiz/{{ quiz.id }}" class="btn-edit">Edit</a>
                                     <a href="/teacher/codes/{{ quiz.id }}" class="btn-secondary">Manage Codes</a>
                                     <a href="/teacher/results/{{ quiz.id }}" class="btn-secondary">View Results</a>
                                     <a href="/teacher/download-scores/{{ quiz.id }}" class="btn-download">Download Scores</a>

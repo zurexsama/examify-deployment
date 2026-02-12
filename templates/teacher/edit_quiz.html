@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Edit Quiz | Examify</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <h1>📝 Edit Quiz</h1>
+            <div class="user-info">
+                <span>Welcome, {{ session.name }}!</span>
+                <a href="/teacher/dashboard" class="btn-secondary">Back to Dashboard</a>
+                <a href="/logout" class="logout-btn">Logout</a>
+            </div>
+        </header>
+
+        <main class="dashboard-main">
+            <div class="dashboard-section">
+                <form method="POST" id="quizForm">
+                    <div class="form-group">
+                        <label>Quiz Title</label>
+                        <input type="text" name="title" value="{{ quiz.title }}" required placeholder="Enter quiz title">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Topic</label>
+                        <select name="topic_id" required>
+                            <option value="">Select a topic</option>
+                            {% for topic in topics %}
+                            <option value="{{ topic.id }}" {% if topic.id == quiz.topic_id %}selected{% endif %}>{{ topic.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Duration (minutes)</label>
+                            <input type="number" name="duration" value="{{ quiz.duration }}" required min="1" placeholder="30">
+                        </div>
+                        <div class="form-group">
+                            <label>Total Marks</label>
+                            <input type="number" name="total_marks" value="{{ quiz.total_marks }}" required min="1" placeholder="100">
+                        </div>
+                    </div>
+
+                    <h3>Access Code Settings</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Code Expiration</label>
+                            <input type="datetime-local" name="code_expires_at" value="{% if quiz.code_expires_at %}{{ quiz.code_expires_at.strftime('%Y-%m-%dT%H:%M') }}{% endif %}" placeholder="Leave empty for no expiration">
+                        </div>
+                        <div class="form-group">
+                            <label>Max Attempts per Student</label>
+                            <select name="max_attempts">
+                                <option value="1" {% if quiz.max_attempts == 1 %}selected{% endif %}>One time only</option>
+                                <option value="0" {% if quiz.max_attempts == 0 %}selected{% endif %}>Unlimited</option>
+                                <option value="2" {% if quiz.max_attempts == 2 %}selected{% endif %}>2 attempts</option>
+                                <option value="3" {% if quiz.max_attempts == 3 %}selected{% endif %}>3 attempts</option>
+                                <option value="5" {% if quiz.max_attempts == 5 %}selected{% endif %}>5 attempts</option>
+                                <option value="10" {% if quiz.max_attempts == 10 %}selected{% endif %}>10 attempts</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="allow_concurrent" value="true" {% if quiz.allow_concurrent %}checked{% endif %}>
+                            Allow multiple students to take quiz simultaneously
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Update Quiz</button>
+                </form>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

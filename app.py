@@ -384,6 +384,41 @@ def create_quiz():
     topics = Topic.query.filter_by(teacher_id=teacher_id).all()
     return render_template('teacher/create_quiz.html', topics=topics)
 
+@app.route('/teacher/edit-quiz/<int:quiz_id>', methods=['GET', 'POST'])
+def edit_quiz(quiz_id):
+    if session.get('role') != 'teacher':
+        return redirect('/login')
+
+    quiz = Quiz.query.get_or_404(quiz_id)
+    if quiz.teacher_id != session.get('user_id'):
+        flash('You do not have permission to edit this quiz.', 'error')
+        return redirect('/teacher/dashboard')
+
+    if request.method == 'POST':
+        quiz.title = request.form['title']
+        quiz.topic_id = request.form['topic_id']
+        quiz.duration = int(request.form['duration'])
+        quiz.total_marks = int(request.form['total_marks'])
+
+        # Security settings
+        code_expires_at = request.form.get('code_expires_at')
+        if code_expires_at:
+            from datetime import datetime
+            quiz.code_expires_at = datetime.fromisoformat(code_expires_at.replace('T', ' '))
+        else:
+            quiz.code_expires_at = None
+        quiz.max_attempts = int(request.form.get('max_attempts', '1'))
+        quiz.allow_concurrent = 'allow_concurrent' in request.form
+
+        db.session.commit()
+        flash('Quiz updated successfully!', 'success')
+        return redirect('/teacher/dashboard')
+
+    # Get topics for the dropdown
+    teacher_id = session.get('user_id')
+    topics = Topic.query.filter_by(teacher_id=teacher_id).all()
+    return render_template('teacher/edit_quiz.html', quiz=quiz, topics=topics)
+
 @app.route('/teacher/results/<int:quiz_id>')
 def view_results(quiz_id):
     # Get all attempts for this quiz with student details
