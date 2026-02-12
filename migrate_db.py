@@ -12,21 +12,21 @@ def migrate_database():
         try:
             # Add missing columns to quizzes table
             print("Adding missing columns to quizzes table...")
-            db.session.execute(db.text("ALTER TABLE quizzes ADD COLUMN code_expires_at DATETIME NULL"))
-            db.session.execute(db.text("ALTER TABLE quizzes ADD COLUMN max_attempts INT DEFAULT 1"))
-            db.session.execute(db.text("ALTER TABLE quizzes ADD COLUMN allow_concurrent BOOLEAN DEFAULT FALSE"))
+            db.session.execute(db.text("ALTER TABLE quizzes ADD COLUMN IF NOT EXISTS code_expires_at TIMESTAMP NULL"))
+            db.session.execute(db.text("ALTER TABLE quizzes ADD COLUMN IF NOT EXISTS max_attempts INT DEFAULT 1"))
+            db.session.execute(db.text("ALTER TABLE quizzes ADD COLUMN IF NOT EXISTS allow_concurrent BOOLEAN DEFAULT FALSE"))
             print("Columns added to quizzes table successfully!")
 
-            # Create access_codes table
+            # Create access_codes table if not exists
             print("Creating access_codes table...")
             db.session.execute(db.text("""
-                CREATE TABLE access_codes (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
+                CREATE TABLE IF NOT EXISTS access_codes (
+                    id SERIAL PRIMARY KEY,
                     quiz_id INT,
                     code VARCHAR(8) UNIQUE,
                     is_used BOOLEAN DEFAULT FALSE,
                     used_by INT NULL,
-                    used_at DATETIME NULL,
+                    used_at TIMESTAMP NULL,
                     FOREIGN KEY (quiz_id) REFERENCES quizzes(id),
                     FOREIGN KEY (used_by) REFERENCES users(id)
                 )
@@ -39,7 +39,7 @@ def migrate_database():
         except Exception as e:
             db.session.rollback()
             print(f"Error during migration: {e}")
-            print("Make sure MySQL is running and the database 'examify_db' exists")
+            print("Make sure PostgreSQL is running and the database exists")
 
 if __name__ == "__main__":
     migrate_database()
