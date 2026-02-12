@@ -25,13 +25,15 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Death_march143@db
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'connect_args': {
         'sslmode': 'require',
-        'family': socket.AF_INET,
     },
 }
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
 db = SQLAlchemy(app)
 with app.app_context():
-    db.create_all()
+    try:
+        db.create_all()
+    except Exception as e:
+        print(f"Warning: Could not create database tables: {e}")
 
 # Models
 class User(db.Model):
