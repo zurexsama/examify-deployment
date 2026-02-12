@@ -548,7 +548,7 @@ def email_codes(quiz_id):
 
                     Access Code: {code.code}
 
-                    Please use this code to access the quiz. The code can only be used once.
+                    Please use this code to access the quiz. You can attempt the quiz up to {quiz.max_attempts if quiz.max_attempts > 0 else 'unlimited'} time{'s' if quiz.max_attempts != 1 else ''}.
 
                     Best regards,
                     Examify Team
@@ -615,12 +615,11 @@ def take_quiz(quiz_id):
         flash('Quiz not found.', 'error')
         return redirect('/student/dashboard')
 
-    # Verify access code was used (since we redirect here only after valid access code)
-    # Additional security: check if student has already attempted
+    # Additional security: check attempt limits
     student_id = session.get('user_id')
-    existing_attempt = StudentAttempt.query.filter_by(student_id=student_id, quiz_id=quiz_id).first()
-    if existing_attempt:
-        flash('You have already attempted this quiz.', 'error')
+    attempt_count = StudentAttempt.query.filter_by(student_id=student_id, quiz_id=quiz_id).count()
+    if quiz.max_attempts > 0 and attempt_count >= quiz.max_attempts:
+        flash(f'Attempt limit reached: You have reached the maximum number of attempts ({quiz.max_attempts}) for this quiz.', 'error')
         return redirect('/student/dashboard')
 
     questions = Question.query.filter_by(quiz_id=quiz_id).all()
@@ -717,10 +716,7 @@ def enter_access_code():
         flash('Invalid access code: Associated quiz not found.', 'error')
         return redirect('/student/dashboard')
 
-    # Check if code is already used
-    if code_record.is_used:
-        flash('Code already used: This access code has already been redeemed.', 'error')
-        return redirect('/student/dashboard')
+    # Note: Codes are reusable based on attempt limits per student
 
     # Check expiration
     if quiz.code_expires_at and datetime.now() > quiz.code_expires_at:
@@ -744,10 +740,7 @@ def enter_access_code():
         flash(f'Attempt limit reached: You have reached the maximum number of attempts ({quiz.max_attempts}) for this quiz.', 'error')
         return redirect('/student/dashboard')
 
-    # Mark code as used
-    code_record.is_used = True
-    code_record.used_by = student_id
-    code_record.used_at = datetime.now()
+    # Note: Codes remain available for reuse based on attempt limits
     db.session.commit()
 
     # Mark session as active for this quiz
