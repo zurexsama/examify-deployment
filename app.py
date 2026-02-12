@@ -19,9 +19,9 @@ app = Flask(__name__)
 # Check for required environment variables
 database_url = os.getenv('DATABASE_URL')
 if not database_url:
-    database_url = 'postgresql://postgres:Death_march143@db.pxeclpyxatrebmsheznw.supabase.co:5432/postgres'
+    database_url = 'postgresql://postgres.pxeclpyxatrebmsheznw:Death_march143@aws-1-ap-southeast-2.pooler.supabase.com:5432/postgres'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Death_march143@db.pxeclpyxatrebmsheznw.supabase.co:5432/postgres'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres.pxeclpyxatrebmsheznw:Death_march143@aws-1-ap-southeast-2.pooler.supabase.com:5432/postgres'
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'connect_args': {
         'sslmode': 'require',
