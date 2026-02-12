@@ -33,6 +33,15 @@ def migrate_database():
             """))
             print("access_codes table created successfully!")
 
+            # Reset sequences for auto-incrementing IDs
+            print("Resetting sequences for auto-incrementing IDs...")
+            db.session.execute(db.text("SELECT setval('quizzes_id_seq', (SELECT COALESCE(MAX(id), 1) FROM quizzes))"))
+            db.session.execute(db.text("SELECT setval('questions_id_seq', (SELECT COALESCE(MAX(id), 1) FROM questions))"))
+            db.session.execute(db.text("SELECT setval('options_id_seq', (SELECT COALESCE(MAX(id), 1) FROM options))"))
+            db.session.execute(db.text("SELECT setval('access_codes_id_seq', (SELECT COALESCE(MAX(id), 1) FROM access_codes))"))
+            db.session.execute(db.text("SELECT setval('student_attempts_id_seq', (SELECT COALESCE(MAX(id), 1) FROM student_attempts))"))
+            print("Sequences reset successfully!")
+
             db.session.commit()
             print("Migration completed successfully!")
 
