@@ -285,6 +285,28 @@ label {
     transform: translateY(-1px);
 }
 
+.btn-edit {
+    padding: 6px 12px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-edit:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+    text-decoration: none;
+    color: white;
+}
+
 .alert {
     padding: 15px;
     border-radius: 8px;
