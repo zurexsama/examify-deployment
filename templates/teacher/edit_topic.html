@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Edit Topic{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h4>Edit Topic</h4>
+                <p class="mb-0 text-muted">Modify the topic details</p>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Topic Name</label>
+                        <input type="text" class="form-control" name="name" value="{{ topic.name }}" required
+                               placeholder="e.g., Mathematics, Science, History">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" name="description" rows="4"
+                                  placeholder="Brief description of this topic">{{ topic.description }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Update Topic</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

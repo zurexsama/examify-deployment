@@ -185,6 +185,24 @@ def create_topic():
         return redirect('/teacher/dashboard')
     return render_template('teacher/create_topic.html')
 
+@app.route('/teacher/edit-topic/<int:topic_id>', methods=['GET', 'POST'])
+def edit_topic(topic_id):
+    if session.get('role') != 'teacher':
+        return redirect('/login')
+
+    topic = Topic.query.get_or_404(topic_id)
+    if topic.teacher_id != session.get('user_id'):
+        flash('You do not have permission to edit this topic.', 'error')
+        return redirect('/teacher/dashboard')
+
+    if request.method == 'POST':
+        topic.name = request.form['name']
+        topic.description = request.form['description']
+        db.session.commit()
+        flash('Topic updated successfully!', 'success')
+        return redirect('/teacher/dashboard')
+    return render_template('teacher/edit_topic.html', topic=topic)
+
 @app.route('/teacher/delete-topic/<int:topic_id>', methods=['POST'])
 def delete_topic(topic_id):
     if session.get('role') != 'teacher':
